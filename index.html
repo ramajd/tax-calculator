@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.classless.pumpkin.min.css">
+    <title>محاسبه گر مالیات حقوق</title>
+
+    <style>
+        :root {
+            --pico-font-family: 'Vazirmatn', sans-serif;
+            --pico-font-size: 1.0rem;
+            --pico-font-size-small: 0.8rem;
+            --pico-font-size-large: 1.5rem;
+            --pico-font-size-xlarge: 2rem;
+            --pico-font-size-xxlarge: 3rem;
+        }
+
+        .form-wrapper {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        figure {
+            text-align: center;
+            margin: 0 auto;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <div class="form-wrapper">
+            <figure>
+                <img src="assets/logo.png" alt="tax calculator logo" width="200" height="200">
+            </figure>
+            <h1>محاسبه گر مالیات حقوق</h1>
+            <blockquote>
+                محاسبه مالیات حقوق کارمندان با توجه به مصوبات وزارت امور اقتصادی و دارایی
+            </blockquote>
+            <form>
+                <fieldset>
+                    <label>انتخاب سال
+                        <select id="tax-year"></select>
+                    </label>
+                    <label>حقوق ماهیانه (ریال)
+                        <input type="text" id="salary" required placeholder="مثال: 10000000" pattern="[0-9,]+"
+                            title="لطفا فقط اعداد را وارد کنید">
+                    </label>
+                </fieldset>
+                <button type="submit">محاسبه مالیات</button>
+
+            </form>
+            <div class="overflow-auto">
+                <table class="hidden" id="tax-table">
+                    <thead>
+                        <tr>
+                            <th>حقوق دریافتی</th>
+                            <th>نرخ</th>
+                            <th>مالیات </th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="2">جمع کل</td>
+                            <td id="total-tax">0 ریال</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </main>
+</body>
+
+<script>
+    const taxTable = document.getElementById('tax-table');
+    const taxTableBody = taxTable.querySelector('tbody');
+    const taxYear = document.getElementById('tax-year');
+    const salaryInput = document.getElementById('salary');
+    const taxForm = document.querySelector('form');
+    const totalTax = document.getElementById('total-tax');
+    let taxData = [];
+
+    (async () => {
+        const response = await fetch('assets/tax.json');
+        taxData = await response.json();
+        taxData.forEach(tax => taxYear.appendChild(new Option(tax.year, tax.year)));
+    })();
+
+    // hide table on select change
+    taxYear.addEventListener('change', () => {
+        taxTable.classList.add('hidden');
+        totalTax.innerText = '0 ریال';
+    });
+
+
+    taxForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const selectedYear = parseInt(taxYear.value);
+        if (isNaN(selectedYear)) {
+            alert('لطفا سال را انتخاب کنید');
+            return;
+        }
+        const salary = parseFloat(salaryInput.value.replace(/,/g, ''));
+        const selectedRates = taxData.find(t => t.year === selectedYear);
+        console.log(selectedYear, salary, selectedRates);
+
+        let total = 0;
+        let remaining = salary;
+        taxTableBody.innerHTML = '';
+        selectedRates.steps.forEach(step => {
+            const stepSalary = step.to === 0 ? remaining : Math.min(remaining, step.to - step.from);
+            const stepTax = (stepSalary * step.rate) / 100;
+            total += stepTax;
+            remaining -= stepSalary;
+
+            const stepCell = step.to === 0
+                ? `${step.from.toLocaleString('fa-IR')} ریال به بالا`
+                : `${step.from.toLocaleString('fa-IR')} تا ${step.to.toLocaleString('fa-IR')} ریال`;
+            taxTableBody.innerHTML += `<tr>
+                    <td>${stepCell}</td>
+                    <td>${step.rate.toLocaleString('fa-IR')}%</td>
+                    <td>${stepTax.toLocaleString('fa-IR')} ریال</td>
+                </tr>`;
+        })
+        totalTax.innerText = `${total.toLocaleString('fa-IR')} ریال`;
+
+        taxTable.classList.remove('hidden');
+        taxTable.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+</script>
+
+</html>
