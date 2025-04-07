@@ -1,0 +1,65 @@
+{
+  "name": "محاسبه گر مالیات",
+  "short_name": "Tax Calculator",
+  "start_url": "/",
+  "display": "fullscreen",
+  "icons": [
+    {
+      "sizes": "114x114",
+      "src": "assets/AppImages/ios/114.png"
+    },
+    {
+      "sizes": "120x120",
+      "src": "assets/AppImages/ios/120.png"
+    },
+    {
+      "sizes": "144x144",
+      "src": "assets/AppImages/ios/144.png"
+    },
+    {
+      "sizes": "152x152",
+      "src": "assets/AppImages/ios/152.png"
+    },
+    {
+      "sizes": "180x180",
+      "src": "assets/AppImages/ios/180.png"
+    },
+    {
+      "sizes": "57x57",
+      "src": "assets/AppImages/ios/57.png"
+    },
+    {
+      "sizes": "60x60",
+      "src": "assets/AppImages/ios/60.png"
+    },
+    {
+      "sizes": "72x72",
+      "src": "assets/AppImages/ios/72.png"
+    },
+    {
+      "sizes": "76x76",
+      "src": "assets/AppImages/ios/76.png"
+    },
+    {
+      "src": "assets/AppImages/ios/192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "assets/AppImages/ios/512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "prefer_related_applications": true,
+  "related_applications": [
+    
+  ],
+  "theme_color": "#ff9500",
+  "background_color": "#000000",
+  "id": "com.github.ramajd.tax-calculator",
+  "description": "محاسبه مالیات حقوق بر اساسش مصوبات وزارت امور اقتصادی و دارایی",
+  "dir": "rtl",
+  "lang": "fa",
+  "orientation": "portrait"
+}
