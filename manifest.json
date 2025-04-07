@@ -1,7 +1,7 @@
 {
   "name": "محاسبه گر مالیات",
   "short_name": "Tax Calculator",
-  "start_url": "/",
+  "start_url": "https://ramajd.github.io/tax-calculator/",
   "display": "fullscreen",
   "icons": [
     {
