@@ -64,22 +64,25 @@
 
             </form>
             <div class="overflow-auto">
-                <table class="hidden" id="tax-table">
-                    <thead>
-                        <tr>
-                            <th>حقوق دریافتی</th>
-                            <th>نرخ</th>
-                            <th>مالیات </th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="2">جمع کل</td>
-                            <td id="total-tax">0 ریال</td>
-                        </tr>
-                    </tfoot>
-                </table>
+                <div class="table-wrapper hidden">
+                    <table id="tax-table">
+                        <thead>
+                            <tr>
+                                <th>حقوق دریافتی</th>
+                                <th>نرخ</th>
+                                <th>مالیات </th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="2">جمع کل</td>
+                                <td id="total-tax">0 ریال</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    <input id="reset-form" type="reset" value="شروع مجدد">
+                </div>
             </div>
             <hr>
             <p style="text-align: center; font-size: 0.8rem;">
@@ -101,12 +104,14 @@
 </body>
 
 <script>
+    const tableWrapper = document.querySelector('.table-wrapper');
     const taxTable = document.getElementById('tax-table');
     const taxTableBody = taxTable.querySelector('tbody');
     const taxYear = document.getElementById('tax-year');
     const salaryInput = document.getElementById('salary');
     const taxForm = document.querySelector('form');
     const totalTax = document.getElementById('total-tax');
+
     let taxData = [];
 
     (async () => {
@@ -117,8 +122,16 @@
 
     // hide table on select change
     taxYear.addEventListener('change', () => {
-        taxTable.classList.add('hidden');
+        tableWrapper.classList.add('hidden');
         totalTax.innerText = '0 ریال';
+    });
+
+    document.getElementById('reset-form').addEventListener('click', () => {
+        tableWrapper.classList.add('hidden');
+        totalTax.innerText = '0 ریال';
+        salaryInput.value = '';
+        taxYear.selectedIndex = 0;
+        taxTableBody.innerHTML = '';
     });
 
 
@@ -154,7 +167,7 @@
         })
         totalTax.innerText = `${total.toLocaleString('fa-IR')} ریال`;
 
-        taxTable.classList.remove('hidden');
+        tableWrapper.classList.remove('hidden');
         taxTable.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
 </script>
